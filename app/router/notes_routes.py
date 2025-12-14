@@ -78,13 +78,7 @@ async def search_notes_route(
     
 
 @note_router.post('', response_model=NoteResponseSchema, status_code=201)
-async def create_note_route(
-    request: Request,
-    data: NoteCreateSchema,
-    _ = Depends(rate_limit_20_per_minute),
-    db: AsyncSession = Depends(connect_db),
-    payload: dict = Depends(verify_authentication)
-):
+async def create_note_route(request: Request, data: NoteCreateSchema, _ = Depends(rate_limit_20_per_minute),db: AsyncSession = Depends(connect_db), payload: dict = Depends(verify_authentication)):
     """
     Create a new note.
     
@@ -99,13 +93,7 @@ async def create_note_route(
 
 
 @note_router.get('/{note_id}', response_model=NoteResponseSchema)
-async def get_note_route(
-    request: Request,
-    note_id: UUID,
-    _ = Depends(rate_limit_20_per_minute),
-    db: AsyncSession = Depends(connect_db),
-    payload: dict = Depends(verify_authentication)
-):
+async def get_note_route(request: Request, note_id: UUID, _ = Depends(rate_limit_20_per_minute), db: AsyncSession = Depends(connect_db), payload: dict = Depends(verify_authentication)):
     """
     Retrieve a single note by ID.
     
@@ -113,6 +101,7 @@ async def get_note_route(
     - User can only access their own notes
     """
     user_id = payload.get('id')
+    
     if not user_id:
         raise HTTPException(status_code=401, detail="Invalid token payload")
     
@@ -120,15 +109,7 @@ async def get_note_route(
 
 
 @note_router.get('', response_model=NoteListResponseSchema)
-async def list_notes_route(
-    request: Request,
-    _ = Depends(rate_limit_20_per_minute),
-    page: int = Query(1, ge=1, description="Page number"),
-    page_size: int = Query(10, ge=1, le=100, description="Items per page"),
-    search: Optional[str] = Query(None, description="Search in title and content"),
-    db: AsyncSession = Depends(connect_db),
-    payload: dict = Depends(verify_authentication),
-):
+async def list_notes_route(request: Request, _ = Depends(rate_limit_20_per_minute),     page: int = Query(1, ge=1, description="Page number"), page_size: int = Query(10, ge=1, le=100, description="Items per page"), search: Optional[str] = Query(None, description="Search in title and content"), db: AsyncSession = Depends(connect_db), payload: dict = Depends(verify_authentication)):
     """
     List all notes for the authenticated user.
     
@@ -151,14 +132,7 @@ async def list_notes_route(
 
 
 @note_router.put('/{note_id}', response_model=NoteResponseSchema)
-async def update_note_route(
-    request: Request,
-    note_id: UUID,
-    data: NoteUpdateSchema,
-    _ = Depends(rate_limit_20_per_minute),
-    db: AsyncSession = Depends(connect_db),
-    payload: dict = Depends(verify_authentication)
-):
+async def update_note_route(request: Request, note_id: UUID, data: NoteUpdateSchema, _ = Depends(rate_limit_20_per_minute), db: AsyncSession = Depends(connect_db), payload: dict = Depends(verify_authentication)):
     """
     Update an existing note.
     
@@ -174,13 +148,7 @@ async def update_note_route(
 
 
 @note_router.delete('/{note_id}')
-async def delete_note_route(
-    request: Request,
-    note_id: UUID,
-    _ = Depends(rate_limit_20_per_minute),
-    db: AsyncSession = Depends(connect_db),
-    payload: dict = Depends(verify_authentication)
-):
+async def delete_note_route(request: Request, note_id: UUID, _ = Depends(rate_limit_20_per_minute), db: AsyncSession = Depends(connect_db), payload: dict = Depends(verify_authentication)):
     """
     Soft delete a note.
     

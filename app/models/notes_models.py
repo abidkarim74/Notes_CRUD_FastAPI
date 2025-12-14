@@ -18,7 +18,7 @@ class Note(Base):
         nullable=False,
         index=True  
     )
-    
+    #using this for soft delete
     is_deleted: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
 
     title: Mapped[str] = mapped_column(String(200), nullable=False)
